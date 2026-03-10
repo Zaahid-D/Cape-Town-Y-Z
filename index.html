@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Cape Town · Y&Z</title>
+    <link rel="icon" type="image/png" href="3.png">
+    <!-- Font & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="preload" as="image" href="1.webp">
+<link rel="preload" as="image" href="2.webp">
+<link rel="preload" as="image" href="3.png">
+<link rel="preload" as="image" href="7.webp">
+<link rel="preload" as="image" href="1.1.webp">
+<link rel="preload" as="image" href="1.2.webp">
+<link rel="preload" as="image" href="1.3.webp">
+<link rel="preload" as="image" href="1.4.webp">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d1b2a; /* deep navy base */
+            color: #ffffff;
+            line-height: 1.4;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ---------- glassmorphism nav (collapsible) ---------- */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            background: rgba(13, 27, 42, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,220,193,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: padding 0.3s ease, background 0.3s ease;
+        }
+
+        .glass-nav.scrolled {
+            padding: 0.6rem 2rem;
+            background: rgba(13, 27, 42, 0.8);
+        }
+
+        .nav-logo a {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            background: linear-gradient(145deg, #ffffff, #ffdcc1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,220,193,0.15);
+            border-color: rgba(255,220,193,0.3);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: white;
+            background: transparent;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .nav-menu {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                background: rgba(13, 27, 42, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 2rem 0;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: transform 0.4s ease, opacity 0.3s ease;
+                border-bottom: 1px solid rgba(255,220,193,0.2);
+                pointer-events: none;
+            }
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+            .glass-nav.scrolled .nav-menu { top: 60px; }
+        }
+
+        /* section styling - overlap enabled */
+        .section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem 1.5rem 3rem;
+            will-change: transform;
+        }
+
+        /* Remove padding from sections that wrap the big card */
+        #section3 {
+            padding: 0 !important;
+            min-height: auto !important;
+            margin: -5vh 0 -5vh 0;  /* pull card into adjacent sections */
+            z-index: 20;
+        }
+
+        /* headings double style */
+        .heading-double {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            width: 100%;
+        }
+        .heading-double .small-head {
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 300;
+            color: #ffdcc1;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .heading-double .big-head {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #ffdcc1, #b3d0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+
+        /* unified gradient overlay */
+        .gradient-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at top, rgba(13,27,42,0.7) 0%, rgba(30,58,95,0.4) 50%, rgba(107,142,191,0.2) 80%, rgba(255,220,193,0.1) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .overlay-dark {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, rgba(13,27,42,0.3) 90%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .sky-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('1.webp') center center / cover no-repeat;
+            background-attachment: fixed;
+            z-index: 0;
+        }
+        #section2 .sky-bg {
+            background: url('2.webp') center center / cover no-repeat;
+            background-attachment: fixed;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* ---------- SECTION 1: hero ---------- */
+        #hero { overflow: hidden; }
+        .hero-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .hero-text {
+            text-align: center;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.2s ease;
+        }
+        .hero-text.fly-away {
+            transform: translateY(-150px) scale(0.8);
+            opacity: 0;
+        }
+        .gradient-letters {
+            font-size: clamp(2.8rem, 15vw, 6rem);
+            font-weight: 800;
+            background: linear-gradient(145deg, #ffffff, #ffdcc1, #aac9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 20px rgba(255,255,255,0.2);
+        }
+        .names {
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
+            font-weight: 400;
+            letter-spacing: 4px;
+            margin-top: 0.5rem;
+            color: #ffffff;
+            text-shadow: 0 0 40px #ffdcc1;
+        }
+
+        /* split layout for flights */
+        .split-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+            margin-bottom: 4rem;
+        }
+        .split-left, .split-right {
+            flex: 1 1 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 280px;
+        }
+        .plane-side-img {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 60px;
+            box-shadow: 0 30px 40px -10px #0d1b2a;
+            transition: transform 1s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 1s ease;
+            aspect-ratio: 1/1.2;
+            object-fit: cover;
+            filter: brightness(1.02) contrast(1.02);
+            opacity: var(--fly-opacity, 1);
+            transform: translateX(var(--fly-x, 0)) translateY(var(--fly-y, 0)) scale(var(--fly-scale, 1));
+        }
+        .date-card {
+            background: rgba(13, 27, 42, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 48px;
+            padding: 2.8rem 2rem;
+            border: 1px solid rgba(255,220,193,0.25);
+            box-shadow: 0 30px 40px -15px #0a1727;
+            max-width: 440px;
+            width: 100%;
+            transition: transform 0.4s ease, box-shadow 0.3s;
+        }
+        .date-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 40px 60px -10px #ffdcc180;
+        }
+        .airport-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.2rem 0 1.8rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.05);
+            padding: 0.8rem 1.2rem;
+            border-radius: 60px;
+        }
+        .date-big { font-size: clamp(2.8rem, 8vw, 4.5rem); font-weight: 700; color: white; }
+        .month { font-size: 1.2rem; font-weight: 200; color: #ffdcc1; }
+
+        /* ---------- BIG CARD: full width, overlaps adjacent sections ---------- */
+        .big-gradient-card {
+            position: relative;
+            z-index: 25;
+            width: 100%;
+            background: radial-gradient(circle at 50% 0%, 
+                #0d1b2a 0%, #1e3a5f 35%, #3b5998 60%, #6b8ebf 80%, #ffdcc1 100%);
+            border-radius: 80px 80px 80px 80px;
+            padding: 5rem 1.5rem 5rem;
+            box-shadow: 0 40px 60px -20px #00000080;
+            margin: -5vh 0 -5vh 0;  /* negative margins create overlap */
+        }
+
+        .hotel-card {
+            background: rgba(13, 27, 42, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 56px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255,220,193,0.3);
+            margin-bottom: 4rem;
+            transition: transform 0.4s ease, box-shadow 0.3s;
+        }
+        .hotel-card:hover {
+            transform: scale(1.01) translateY(-5px);
+            box-shadow: 0 40px 60px -15px #ffdcc1;
+        }
+        .hotel-name {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        .hotel-address {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            background: rgba(13,27,42,0.5);
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            width: fit-content;
+            border: 1px solid rgba(255,220,193,0.3);
+            margin: 1.5rem 0;
+        }
+        .hotel-address a {
+            color: #ffdcc1;
+            text-decoration: none;
+        }
+        .hotel-address a:hover { text-decoration: underline; color: white; }
+        .acc-images {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 1rem;
+        }
+        .acc-images img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 30px;
+            border: 2px solid rgba(255,220,193,0.6);
+            transition: transform 0.3s ease;
+        }
+        .acc-images img:hover { transform: scale(1.1) rotate(2deg); }
+
+        /* ---------- SECTION 4: documents ---------- */
+        .docs-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('7.webp') center center / cover no-repeat;
+            filter: brightness(0.25);
+            z-index: 0;
+        }
+       
+        .glass-docs-panel:hover { transform: scale(1.01); }
+        .doc-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .doc-card {
+            background: rgba(13, 27, 42, 0.5);
+            border: 1px solid rgba(255,220,193,0.4);
+            border-radius: 54px;
+            padding: 2rem 1.5rem;
+            min-width: 190px;
+            flex: 1 1 190px;
+            text-align: center;
+            backdrop-filter: blur(6px);
+            transition: all 0.4s cubic-bezier(0.2,0.9,0.3,1);
+        }
+        .doc-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            background: rgba(30,58,95,0.7);
+            border-color: #ffdcc1;
+            box-shadow: 0 30px 40px -10px #ffdcc1;
+        }
+        .doc-card i {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #ffffff, #ffdcc1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        .download-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #ffdcc1;
+            border-radius: 100px;
+            padding: 0.6rem 1.8rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: 0.2s;
+            margin-top: 1.5rem;
+        }
+        .download-btn:hover { background: #ffdcc1; color: #0d1b2a; }
+
+        /* ---------- MODERN THIN FOOTER ---------- */
+        .footer {
+            width: 100%;
+            background: transparent; 
+            border-top: 1px solid rgba(255,220,193,0.2);
+            padding: 1.8rem 1.5rem;  /* thinner padding */
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .footer span {
+            font-size: 1.4rem;
+            font-weight: 400;
+            background: linear-gradient(145deg, #ffffff, #ffdcc1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .footer i {
+            color: #ffdcc1;
+            font-size: 1.4rem;
+        }
+
+        /* animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        .fade-up.appear {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        i { transition: transform 0.3s ease, text-shadow 0.3s; }
+        i:hover {
+            transform: scale(1.1) rotate(2deg);
+            text-shadow: 0 0 12px #ffdcc1;
+        }
+
+        @media (min-width: 1200px) {
+            .split-left, .split-right { flex: 1 1 400px; }
+            .hotel-card {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .hotel-address { justify-content: center; }
+        }
+        @media (max-width: 700px) {
+            .split-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav" id="navbar">
+        <div class="nav-logo"><a href="#hero">✈️ Y&Z</a></div>
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#hero">HOME</a></li>
+            <li><a href="#section3">DATES</a></li>
+            <li><a href="#section3">STAY</a></li>
+            <li><a href="#docs">DOCS</a></li>
+        </ul>
+    </nav>
+
+    <!-- SECTION 1 - HERO -->
+    <section class="section" id="hero">
+        <div class="sky-bg"></div>
+        <div class="gradient-overlay"></div>
+        <div class="overlay-dark"></div>
+        <div class="content hero-inner">
+            <div class="hero-text" id="heroText">
+                <div class="gradient-letters">CAPE TOWN</div>
+                <div class="names">Zainab & Yusuf</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 (big overlapping card) -->
+    <section class="section" id="section3">
+        <!-- full‑width card with negative margins to overlap -->
+        <div class="big-gradient-card">
+            <div class="content" style="max-width: 1300px; margin: 0 auto;">
+
+                <!-- FLIGHTS & DATES -->
+                <div class="heading-double fade-up">
+                    <div class="small-head">flights</div>
+                    <div class="big-head">FlySafair</div>
+                </div>
+
+                <div class="split-container">
+                    <div class="split-left fade-up" id="planeSideContainer">
+                        <img src="3.png" alt="top view plane" class="plane-side-img" id="flyPlane" onerror="this.src='https://images.unsplash.com/photo-1580746738099-49e2f7a3a3a2?w=400&q=80';">
+                    </div>
+                    <div class="split-right fade-up">
+                        <div class="date-card">
+                            <h3><i class="fas fa-calendar-alt" style="margin-right: 8px; color:#ffdcc1;"></i> TRAVEL DATES</h3>
+                            <div class="airport-route">
+                                <span><i class="fas fa-plane-departure"></i> HLA</span>
+                                <i class="fas fa-long-arrow-alt-right"></i>
+                                <span><i class="fas fa-plane-arrival"></i> CPT</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;">
+                                <span class="date-big">26</span>
+                                <span class="month">April 2026</span>
+                                <span class="month">08:45 | 11:00</span>
+                            </div>
+                            <div class="date-label" style="border-bottom: 1px dashed rgba(255,220,193,0.3); padding-bottom: 0.5rem; margin: 0.5rem 0 1rem;">depart</div>
+                            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                                <span class="date-big">01</span>
+                                <span class="month">May 2026</span>
+                                <span class="month">18:35 | 20:50</span>
+                            </div>
+                            <div class="date-label">return</div>
+                            <div style="margin-top: 1.5rem"><i class="fas fa-clock" style="color:#ffdcc1;"></i> · 2h 15m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOTEL SECTION -->
+                <div class="heading-double fade-up">
+                    <div class="small-head">ACCOMMODATION</div>
+                    <div class="big-head">Star Holiday Apartments</div>
+                </div>
+
+                <div class="hotel-card fade-up">
+                    <div class="hotel-name">Arum Lily:1-Bedroom Apartment</div>
+                    <div class="acc-images">
+                        <img src="1.1.webp" alt="silo view">
+                        <img src="1.2.webp" alt="room">
+                        <img src="1.3.webp" alt="pool">
+                        <img src="1.4.webp" alt="lobby">
+                    </div>
+                    <div class="hotel-address">
+                        <i class="fas fa-map-pin" style="color: #ffdcc1;"></i>
+                        <a href="https://www.google.com/maps?um=1&ie=UTF-8&fb=1&gl=za&sa=X&geocode=KVFd_K53XcwdMfscPF6wB6uq&daddr=58+Upper+Cambridge+Rd,+Walmer+Estate,+Cape+Town,+7925" target="_blank">58 Upper Cambridge Rd, Walmer Estate, Cape Town, 7925</a>
+                    </div>
+                    <p style="font-size: 1.2rem;"></i> Check-in | 2 pm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: documents -->
+    <section class="section" id="docs" style="min-height: 90vh;">
+        <div class="docs-bg"></div>
+        <div class="gradient-overlay"></div>
+        <div class="overlay-dark"></div>
+        <div class="content glass-docs-panel fade-up" style="width: 95%;">
+            <div class="heading-double">
+                <div class="small-head">YOUR FILES</div>
+                <div class="big-head">DOCUMENTS</div>
+            </div>
+            <div class="doc-grid">
+                <div class="doc-card">
+    <i class="fas fa-ticket-alt"></i>
+    <h4>Flight</h4>
+    <p>FlySafair</p>
+    <a href="https://drive.google.com/file/d/1vxTVSQKXhtnELXdfA0xIbvLUVGmhYdcv/view?usp=sharing" target="_blank" class="download-btn">
+        <i class="fas fa-download"></i> PDF
+    </a>
+</div>
+
+<div class="doc-card">
+    <i class="fas fa-hotel"></i>
+    <h4>Hotel</h4>
+    <p>Star Holiday Apartments</p>
+    <a href="https://drive.google.com/file/d/1qJrO8iI3ZNdYcFQEfYaGbLwo67fD9xoG/view?usp=sharing" target="_blank" class="download-btn">
+        <i class="fas fa-download"></i> PDF
+    </a>
+</div>
+
+<div class="doc-card">
+    <i class="fas fa-car"></i>
+    <h4>Car Hire</h4>
+    <p>TBC</p>
+    <a href="" target="_blank" class="download-btn">
+        <i class="fas fa-download"></i> PDF
+    </a>
+</div> </div>
+        </div>
+    </section>
+
+    <!-- MODERN THIN FOOTER -->
+    <footer class="footer">
+        <i class="fas fa-heart"></i>
+        <div>With lots of love, </div>
+        <span>enjoy every moment!</span>
+    </footer>
+
+    <script>
+        (function() {
+    const heroText = document.getElementById('heroText');
+    const flyPlane = document.getElementById('flyPlane');
+    
+    function updateFlyAnimations() {
+        if (flyPlane) {
+            const rect = flyPlane.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const centerY = rect.top + rect.height/2;
+            const distanceFromCenter = (centerY - windowHeight/2) / (windowHeight/2);
+            
+            let opacity = 1, y = 0, scale = 1;
+            if (distanceFromCenter < -0.5) {
+                const amount = Math.min(1, Math.abs(distanceFromCenter) - 0.5);
+                y = -150 * amount;
+                opacity = 1 - amount;
+                scale = 1 - 0.4 * amount;
+            } else if (distanceFromCenter > 0.5) {
+                const amount = Math.min(1, distanceFromCenter - 0.5);
+                y = 150 * amount;
+                opacity = 1 - amount;
+                scale = 1 - 0.4 * amount;
+            }
+            flyPlane.style.setProperty('--fly-opacity', opacity);
+            flyPlane.style.setProperty('--fly-y', y + 'px');
+            flyPlane.style.setProperty('--fly-scale', scale);
+        }
+    }
+
+    window.addEventListener('scroll', updateFlyAnimations);
+    updateFlyAnimations();
+
+    const faders = document.querySelectorAll('.fade-up');
+    const appearObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('appear');
+            else entry.target.classList.remove('appear');
+        });
+    }, { threshold: 0.15 });
+    faders.forEach(f => appearObserver.observe(f));
+
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            navMenu.classList.remove('active');
+        });
+    });
+
+    // Note: Download button alert removed - now using direct href links
+})();
+    </script>
+    <style>
+        @media (hover: none) {
+            .plane-side-img:hover, .hotel-card:hover, .doc-card:hover { transform: none; }
+        }
+    </style>
+</body>
+</html>
